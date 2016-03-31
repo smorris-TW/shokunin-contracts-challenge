@@ -1,9 +1,30 @@
 'use strict';
 console.info('server.js');
 
+var path = require('path');
 var express = require('express');
 var app = express();
 var port = 4567;
+
+
+
+
+function sendFile(request, response, filePath) {
+    var options = {
+        root: path.join(__dirname, '/../'),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    response.sendFile(filePath, options, function(err) {
+        if (err) {
+            console.error(err);
+            response.status(err.status).end();
+        } else {
+            console.info('sent');
+        }
+    });
+}
 
 app.get('/', function(request, response) {
     console.info('GET /');
@@ -30,23 +51,6 @@ app.post('/order/long-black', function(request, response) {
     response.status(201);
     sendFile(request, response, 'stubs/POST-order.stub.json');
 });
-
-function sendFile(request, response, filePath) {
-    var options = {
-        root: __dirname + '/../',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-    response.sendFile(filePath, options, function(err) {
-        if (err) {
-            console.error(err);
-            response.status(err.status).end();
-        } else {
-            console.info('sent');
-        }
-    });
-}
 
 
 app.listen(port, function() {
