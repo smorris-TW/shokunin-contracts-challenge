@@ -4,6 +4,8 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 import browserSync from 'browser-sync';
 import del from 'del';
 import {stream as wiredep} from 'wiredep';
+
+// https://www.npmjs.com/package/gulp-live-server
 var gls = require('gulp-live-server');
 
 const $ = gulpLoadPlugins();
@@ -35,11 +37,14 @@ gulp.task('serve', ['lint'], () => {
   var server = gls.new('server/scripts/server.js');
   server.start();
 
-  gulp.watch([
-    'server/**/*'
-  ]).on('change', reload);
+  // gulp.watch([
+  //   'server/**/*'
+  // ]).on('change', reload);
 
-  gulp.watch('bower.json', ['wiredep', 'fonts']);
+  gulp.watch('server/**/*', function() {
+      console.info('server changed, reloading');
+      server.start.bind(server)()
+  });
 });
 
 
